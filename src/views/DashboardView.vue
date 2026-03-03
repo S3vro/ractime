@@ -32,6 +32,24 @@
           <component :is="showForm ? X : Play" :size="14" />
           {{ showForm ? 'Cancel' : 'Start Task' }}
         </button>
+
+        <!-- Quick-start from queue -->
+        <div v-if="queuedTasks.length > 0 && !showForm" class="quick-start">
+          <span class="quick-start-label">or pick from queue</span>
+          <div class="quick-start-list">
+            <button
+              v-for="qt in queuedTasks"
+              :key="qt.id"
+              class="quick-start-btn"
+              :id="'quick-start-' + qt.id"
+              @click="handleQuickStart(qt)"
+            >
+              <span class="qs-dot" :style="{ background: getCategoryById(qt.categoryId)?.color ?? '#5C5C78' }"></span>
+              <span class="qs-name">{{ qt.name }}</span>
+              <Play :size="12" class="qs-play" />
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Start form (inline) -->
@@ -91,11 +109,14 @@ import {
   getCategoryById,
   startTask,
   stopTask,
+  getQueuedTasks,
+  startQueuedTask,
 } from '../stores/storage.js'
 import GanttChart from '../components/GanttChart.vue'
 import PieChart from '../components/PieChart.vue'
 
 const categories = getCategories()
+const queuedTasks = getQueuedTasks()
 const activeTask = computed(() => getActiveTask())
 const activeCategory = computed(() =>
   activeTask.value ? getCategoryById(activeTask.value.categoryId) : null
@@ -137,6 +158,10 @@ function handleStart() {
 
 function handleStop() {
   stopTask()
+}
+
+function handleQuickStart(qt) {
+  startQueuedTask(qt.id)
 }
 </script>
 
@@ -265,5 +290,76 @@ function handleStop() {
 @media (max-width: 640px) {
   .timer-clock { font-size: 1.3rem; min-width: auto; }
   .timer-running { gap: var(--sp-sm); }
+}
+
+/* ── Quick Start ─────────────── */
+.quick-start {
+  width: 100%;
+  margin-top: var(--sp-md);
+  padding-top: var(--sp-md);
+  border-top: 1px solid var(--clr-border);
+  text-align: center;
+}
+
+.quick-start-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--clr-text-muted);
+  margin-bottom: var(--sp-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+.quick-start-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-xs);
+  justify-content: center;
+}
+
+.quick-start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-xs);
+  padding: var(--sp-xs) var(--sp-md);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-full);
+  color: var(--clr-cream);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.quick-start-btn:hover {
+  background: var(--clr-surface-hover);
+  border-color: var(--clr-accent);
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.15);
+}
+
+.quick-start-btn:active {
+  transform: scale(0.97);
+}
+
+.qs-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.qs-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qs-play {
+  color: var(--clr-accent);
+  flex-shrink: 0;
 }
 </style>

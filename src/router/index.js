@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import DashboardView from '../views/DashboardView.vue'
+import TasksView from '../views/TasksView.vue'
 import CategoriesView from '../views/CategoriesView.vue'
 
 const routes = [
@@ -8,6 +9,12 @@ const routes = [
         name: 'Dashboard',
         component: DashboardView,
         meta: { title: 'Dashboard' },
+    },
+    {
+        path: '/tasks',
+        name: 'Tasks',
+        component: TasksView,
+        meta: { title: 'Tasks' },
     },
     {
         path: '/categories',

@@ -32,12 +32,14 @@ const state = reactive({
   categories: load('ractime:categories', []),
   tasks: load('ractime:tasks', []),
   activeTask: load('ractime:activeTask', null),
+  queuedTasks: load('ractime:queuedTasks', []),
 })
 
 // Auto-persist on every change
 watch(() => state.categories, (v) => persist('ractime:categories', v), { deep: true })
 watch(() => state.tasks, (v) => persist('ractime:tasks', v), { deep: true })
 watch(() => state.activeTask, (v) => persist('ractime:activeTask', v), { deep: true })
+watch(() => state.queuedTasks, (v) => persist('ractime:queuedTasks', v), { deep: true })
 
 // ── Categories ───────────────────────────────────────
 
@@ -65,6 +67,7 @@ export function deleteCategory(id) {
   if (idx !== -1) state.categories.splice(idx, 1)
   // Also remove tasks that belong to this category
   state.tasks = state.tasks.filter((t) => t.categoryId !== id)
+  state.queuedTasks = state.queuedTasks.filter((t) => t.categoryId !== id)
 }
 
 // ── Tasks ────────────────────────────────────────────
@@ -129,6 +132,44 @@ export function getActiveTask() {
 
 export function getActiveTaskMeta() {
   return state.activeTask
+}
+
+// ── Queued Tasks (Task Queue) ────────────────────────
+
+export function getQueuedTasks() {
+  return state.queuedTasks
+}
+
+export function getQueuedTaskById(id) {
+  return state.queuedTasks.find((t) => t.id === id) ?? null
+}
+
+export function addQueuedTask(name, description, categoryId) {
+  const task = { id: uuid(), name, description, categoryId, createdAt: Date.now() }
+  state.queuedTasks.push(task)
+  return task
+}
+
+export function updateQueuedTask(id, updates) {
+  const task = getQueuedTaskById(id)
+  if (task) Object.assign(task, updates)
+}
+
+export function deleteQueuedTask(id) {
+  const idx = state.queuedTasks.findIndex((t) => t.id === id)
+  if (idx !== -1) state.queuedTasks.splice(idx, 1)
+}
+
+/**
+ * Moves a queued task into the active timer system.
+ * Returns the newly created running task.
+ */
+export function startQueuedTask(id) {
+  const queued = getQueuedTaskById(id)
+  if (!queued) return null
+  const runningTask = startTask(queued.name, queued.description, queued.categoryId)
+  deleteQueuedTask(id)
+  return runningTask
 }
 
 // ── Time Queries ─────────────────────────────────────

@@ -12,6 +12,10 @@
             <BarChart3 :size="16" />
             Dashboard
           </router-link>
+          <router-link to="/tasks" class="nav-link" id="nav-tasks" active-class="nav-link--active">
+            <ListTodo :size="16" />
+            Tasks
+          </router-link>
           <router-link to="/categories" class="nav-link" id="nav-categories" active-class="nav-link--active">
             <Tags :size="16" />
             Categories
@@ -37,7 +41,7 @@
 </template>
 
 <script setup>
-import { BarChart3, Tags, Download } from 'lucide-vue-next'
+import { BarChart3, ListTodo, Tags, Download } from 'lucide-vue-next'
 import { exportCsv } from './stores/storage.js'
 
 function handleExport() {
