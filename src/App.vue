@@ -4,18 +4,22 @@
     <nav class="navbar">
       <div class="navbar-inner">
         <router-link to="/" class="logo" id="nav-logo">
-          <span class="logo-icon">🦝</span>
+          <img src="/icon.png" alt="Ractime" class="logo-icon" />
           <span class="logo-text">Ractime</span>
         </router-link>
         <div class="nav-links">
           <router-link to="/" class="nav-link" id="nav-dashboard" exact-active-class="nav-link--active">
-            <span class="nav-link-icon">📊</span>
+            <BarChart3 :size="16" />
             Dashboard
           </router-link>
           <router-link to="/categories" class="nav-link" id="nav-categories" active-class="nav-link--active">
-            <span class="nav-link-icon">🏷️</span>
+            <Tags :size="16" />
             Categories
           </router-link>
+          <button class="nav-link" id="export-csv-btn" @click="handleExport" title="Export data as CSV">
+            <Download :size="16" />
+            Export
+          </button>
         </div>
       </div>
     </nav>
@@ -33,7 +37,12 @@
 </template>
 
 <script setup>
-// App shell — no logic needed here
+import { BarChart3, Tags, Download } from 'lucide-vue-next'
+import { exportCsv } from './stores/storage.js'
+
+function handleExport() {
+  exportCsv()
+}
 </script>
 
 <style scoped>
@@ -72,7 +81,10 @@
 }
 
 .logo-icon {
-  font-size: 1.6rem;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
 }
 
 .logo-text {
@@ -101,6 +113,10 @@
   font-size: 0.9rem;
   text-decoration: none;
   transition: all var(--transition-fast);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
 }
 
 .nav-link:hover {
@@ -113,15 +129,10 @@
   background: var(--clr-surface);
 }
 
-.nav-link-icon {
-  font-size: 1rem;
-}
-
 /* ── Main ───────────────────────────── */
 .main-content {
   flex: 1;
 }
-
 
 
 @media (max-width: 640px) {

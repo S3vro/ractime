@@ -204,3 +204,58 @@ export function getEntriesForWeek(date = new Date()) {
   }
   return totals
 }
+
+// ── CSV Export ────────────────────────────────────────
+
+function escCsv(val) {
+  const str = String(val ?? '')
+  return str.includes(',') || str.includes('"') || str.includes('\n')
+    ? `"${str.replace(/"/g, '""')}"`
+    : str
+}
+
+function formatDate(ts) {
+  if (!ts) return ''
+  return new Date(ts).toLocaleString()
+}
+
+function msToDuration(ms) {
+  const totalSec = Math.floor(ms / 1000)
+  const h = Math.floor(totalSec / 3600)
+  const m = Math.floor((totalSec % 3600) / 60)
+  const s = totalSec % 60
+  return `${h}h ${m}m ${s}s`
+}
+
+/**
+ * Exports all tasks as a CSV file and triggers a browser download.
+ * One row per time entry.
+ */
+export function exportCsv() {
+  const headers = ['Task', 'Description', 'Category', 'Start', 'End', 'Duration']
+  const rows = [headers.map(escCsv).join(',')]
+
+  for (const task of state.tasks) {
+    const cat = getCategoryById(task.categoryId)
+    for (const entry of task.entries) {
+      const end = entry.end ?? Date.now()
+      const duration = end - entry.start
+      rows.push([
+        escCsv(task.name),
+        escCsv(task.description),
+        escCsv(cat?.name ?? 'Unknown'),
+        escCsv(formatDate(entry.start)),
+        escCsv(formatDate(entry.end)),
+        escCsv(msToDuration(duration)),
+      ].join(','))
+    }
+  }
+
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `ractime-export-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}

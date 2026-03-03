@@ -1,6 +1,9 @@
 <template>
   <div class="container dashboard-page">
-    <h1 class="page-title">📊 Dashboard</h1>
+    <h1 class="page-title">
+      <BarChart3 :size="28" />
+      Dashboard
+    </h1>
 
     <!-- Active task / Start task -->
     <section class="timer-section glass-card" id="timer-section">
@@ -16,15 +19,18 @@
         </div>
         <div class="timer-clock">{{ elapsed }}</div>
         <button class="btn btn-danger" id="stop-task-btn" @click="handleStop">
-          ⏹ Stop
+          <Square :size="14" />
+          Stop
         </button>
       </div>
 
       <!-- Idle state -->
       <div v-else class="timer-idle">
+        <img src="/icon.png" alt="Ractime raccoon" class="idle-hero" />
         <p class="timer-idle-text">No task running</p>
         <button class="btn btn-primary" id="start-task-btn" @click="showForm = !showForm">
-          {{ showForm ? 'Cancel' : '▶ Start Task' }}
+          <component :is="showForm ? X : Play" :size="14" />
+          {{ showForm ? 'Cancel' : 'Start Task' }}
         </button>
       </div>
 
@@ -53,7 +59,8 @@
             </option>
           </select>
           <button type="submit" class="btn btn-primary" id="submit-task-btn">
-            ▶ Go
+            <Play :size="14" />
+            Go
           </button>
         </form>
       </transition>
@@ -75,6 +82,8 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { Play, Square, X } from 'lucide-vue-next'
+import { BarChart3 } from 'lucide-vue-next'
 import {
   getActiveTask,
   getActiveTaskMeta,
@@ -194,8 +203,19 @@ function handleStop() {
 
 .timer-idle {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--sp-md);
+  padding: var(--sp-lg) 0;
+}
+
+.idle-hero {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  filter: drop-shadow(0 0 24px rgba(76, 175, 80, 0.2));
+  animation: fadeIn var(--transition-slow) both;
 }
 
 .timer-idle-text {

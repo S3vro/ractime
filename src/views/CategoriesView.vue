@@ -1,6 +1,9 @@
 <template>
   <div class="container categories-page">
-    <h1 class="page-title">🏷️ Categories</h1>
+    <h1 class="page-title">
+      <Tags :size="28" />
+      Categories
+    </h1>
 
     <!-- Add Category Form -->
     <form class="add-form glass-card" @submit.prevent="handleAdd" id="add-category-form">
@@ -21,14 +24,15 @@
           title="Pick a color"
         />
         <button type="submit" class="btn btn-primary" id="add-category-btn">
-          + Add
+          <Plus :size="14" />
+          Add
         </button>
       </div>
     </form>
 
     <!-- Empty state -->
     <div v-if="categories.length === 0" class="empty-state animate-fade-in">
-      <span class="empty-emoji">🦝</span>
+      <img src="/icon.png" alt="Ractime raccoon" class="empty-hero" />
       <p>No categories yet — create one above!</p>
     </div>
 
@@ -53,14 +57,14 @@
               {{ taskCount(cat.id) }} task{{ taskCount(cat.id) !== 1 ? 's' : '' }}
             </span>
           </div>
-          <span class="category-chevron" :class="{ 'category-chevron--open': expandedId === cat.id }">▸</span>
+          <ChevronRight class="category-chevron" :class="{ 'category-chevron--open': expandedId === cat.id }" :size="16" />
           <button
             class="btn btn-icon btn-danger"
             :id="'delete-category-' + cat.id"
             @click.stop="handleDeleteCategory(cat)"
             title="Delete category"
           >
-            ✕
+            <Trash2 :size="14" />
           </button>
         </div>
 
@@ -91,7 +95,7 @@
                     @click="startEditing(task)"
                     title="Edit task"
                   >
-                    ✎
+                    <Pencil :size="14" />
                   </button>
                   <button
                     class="btn btn-icon btn-danger"
@@ -99,7 +103,7 @@
                     @click="handleDeleteTask(task)"
                     title="Delete task"
                   >
-                    ✕
+                    <Trash2 :size="14" />
                   </button>
                 </div>
               </template>
@@ -167,6 +171,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { Tags, Plus, ChevronRight, Pencil, Trash2 } from 'lucide-vue-next'
 import {
   getCategories,
   addCategory,
@@ -314,10 +319,14 @@ function formatDuration(task) {
   color: var(--clr-text-muted);
 }
 
-.empty-emoji {
-  font-size: 3rem;
+.empty-hero {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
   display: block;
-  margin-bottom: var(--sp-md);
+  margin: 0 auto var(--sp-md);
+  filter: drop-shadow(0 0 20px rgba(76, 175, 80, 0.15));
 }
 
 /* ── Category grid ────────────── */
