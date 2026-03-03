@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import DashboardView from '../views/DashboardView.vue'
 import TasksView from '../views/TasksView.vue'
 import CategoriesView from '../views/CategoriesView.vue'
+import MonthlyView from '../views/MonthlyView.vue'
 
 const routes = [
     {
@@ -21,6 +22,12 @@ const routes = [
         name: 'Categories',
         component: CategoriesView,
         meta: { title: 'Categories' },
+    },
+    {
+        path: '/monthly',
+        name: 'Monthly',
+        component: MonthlyView,
+        meta: { title: 'Monthly' },
     },
 ]
 

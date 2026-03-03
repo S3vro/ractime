@@ -20,6 +20,10 @@
             <Tags :size="16" />
             Categories
           </router-link>
+          <router-link to="/monthly" class="nav-link" id="nav-monthly" active-class="nav-link--active">
+            <CalendarDays :size="16" />
+            Monthly
+          </router-link>
           <button class="nav-link" id="export-csv-btn" @click="handleExport" title="Export data as CSV">
             <Download :size="16" />
             Export
@@ -41,7 +45,7 @@
 </template>
 
 <script setup>
-import { BarChart3, ListTodo, Tags, Download } from 'lucide-vue-next'
+import { BarChart3, ListTodo, Tags, Download, CalendarDays } from 'lucide-vue-next'
 import { exportCsv } from './stores/storage.js'
 
 function handleExport() {

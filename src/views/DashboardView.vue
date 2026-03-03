@@ -84,6 +84,18 @@
       </transition>
     </section>
 
+    <!-- Stats row -->
+    <div class="stats-row">
+      <section class="stat-card glass-card" id="week-hours-card">
+        <span class="stat-label"><Clock :size="16" /> Hours This Week</span>
+        <span class="stat-value">{{ weekHoursFormatted }}</span>
+      </section>
+      <section class="stat-card glass-card" id="avg-hours-card">
+        <span class="stat-label"><TrendingUp :size="16" /> Avg Hours / Day</span>
+        <span class="stat-value">{{ avgHoursFormatted }}</span>
+      </section>
+    </div>
+
     <!-- Charts row -->
     <div class="charts-row">
       <section class="chart-section glass-card" id="gantt-section">
@@ -100,8 +112,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { Play, Square, X } from 'lucide-vue-next'
-import { BarChart3 } from 'lucide-vue-next'
+import { Play, Square, X, BarChart3, Clock, TrendingUp } from 'lucide-vue-next'
 import {
   getActiveTask,
   getActiveTaskMeta,
@@ -111,6 +122,8 @@ import {
   stopTask,
   getQueuedTasks,
   startQueuedTask,
+  getWeekTotalMs,
+  getWeekAvgMsPerDay,
 } from '../stores/storage.js'
 import GanttChart from '../components/GanttChart.vue'
 import PieChart from '../components/PieChart.vue'
@@ -141,11 +154,36 @@ function updateElapsed() {
   elapsed.value = `${h}:${m}:${s}`
 }
 
+// Week-stats polling
+const statsTick = ref(Date.now())
+let statsInterval = null
+
+function formatMs(ms) {
+  const totalMin = Math.floor(ms / 60000)
+  const h = Math.floor(totalMin / 60)
+  const m = totalMin % 60
+  return `${h}h ${m}m`
+}
+
+const weekHoursFormatted = computed(() => {
+  void statsTick.value
+  return formatMs(getWeekTotalMs())
+})
+
+const avgHoursFormatted = computed(() => {
+  void statsTick.value
+  return formatMs(getWeekAvgMsPerDay())
+})
+
 onMounted(() => {
   updateElapsed()
+  statsInterval = setInterval(() => { statsTick.value = Date.now() }, 60000)
   timerInterval = setInterval(updateElapsed, 1000)
 })
-onUnmounted(() => clearInterval(timerInterval))
+onUnmounted(() => {
+  clearInterval(timerInterval)
+  clearInterval(statsInterval)
+})
 
 function handleStart() {
   if (!taskName.value.trim() || !taskCategory.value) return
@@ -263,6 +301,43 @@ function handleQuickStart(qt) {
   flex: 1 1 180px;
 }
 
+/* ── Stats Row ────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-lg);
+  margin-bottom: var(--sp-lg);
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  padding: var(--sp-xl) var(--sp-lg);
+  text-align: center;
+}
+
+.stat-label {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-xs);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--clr-accent);
+  letter-spacing: 0.02em;
+}
+
 /* ── Charts ───────────────────── */
 .charts-row {
   display: grid;
@@ -285,11 +360,15 @@ function handleQuickStart(qt) {
   .charts-row {
     grid-template-columns: 1fr;
   }
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
   .timer-clock { font-size: 1.3rem; min-width: auto; }
   .timer-running { gap: var(--sp-sm); }
+  .stat-value { font-size: 1.8rem; }
 }
 
 /* ── Quick Start ─────────────── */

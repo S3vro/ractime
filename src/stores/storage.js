@@ -246,6 +246,59 @@ export function getEntriesForWeek(date = new Date()) {
   return totals
 }
 
+/**
+ * Total tracked milliseconds for the ISO week containing `date`.
+ */
+export function getWeekTotalMs(date = new Date()) {
+  const totals = getEntriesForWeek(date)
+  let sum = 0
+  for (const ms of Object.values(totals)) sum += ms
+  return sum
+}
+
+/**
+ * Average tracked ms per elapsed day in the ISO week containing `date`.
+ * On a Wednesday it divides by 3, not 7.
+ */
+export function getWeekAvgMsPerDay(date = new Date()) {
+  const { start: wStart } = weekRange(date)
+  const now = Date.now()
+  const elapsed = Math.min(now, date.getTime()) // don't go past "today"
+  const dayMs = 86400000
+  const daysPassed = Math.max(1, Math.floor((elapsed - wStart) / dayMs) + 1)
+  const total = getWeekTotalMs(date)
+  return Math.round(total / daysPassed)
+}
+
+function monthRange(year, month) {
+  const start = new Date(year, month, 1)
+  start.setHours(0, 0, 0, 0)
+  const end = new Date(year, month + 1, 0) // last day of month
+  end.setHours(23, 59, 59, 999)
+  return { start: start.getTime(), end: end.getTime() }
+}
+
+/**
+ * Returns { categoryId → totalMs } for the given month (0-indexed).
+ */
+export function getEntriesForMonth(year, month) {
+  const { start: mStart, end: mEnd } = monthRange(year, month)
+  const totals = {}
+
+  for (const task of state.tasks) {
+    for (const entry of task.entries) {
+      const entryEnd = entry.end ?? Date.now()
+      if (entryEnd >= mStart && entry.start <= mEnd) {
+        const clampedStart = Math.max(entry.start, mStart)
+        const clampedEnd = Math.min(entryEnd, mEnd)
+        const duration = clampedEnd - clampedStart
+        totals[task.categoryId] = (totals[task.categoryId] ?? 0) + duration
+      }
+    }
+  }
+  return totals
+}
+
 // ── CSV Export ────────────────────────────────────────
 
 function escCsv(val) {
