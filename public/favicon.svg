@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Raccoon paw favicon -->
+  <circle cx="32" cy="36" r="16" fill="#8B5E3C"/>
+  <!-- Paw pads -->
+  <circle cx="22" cy="22" r="6" fill="#5C5C78"/>
+  <circle cx="42" cy="22" r="6" fill="#5C5C78"/>
+  <circle cx="16" cy="34" r="5" fill="#5C5C78"/>
+  <circle cx="48" cy="34" r="5" fill="#5C5C78"/>
+  <!-- Center pad -->
+  <ellipse cx="32" cy="38" rx="10" ry="8" fill="#F5E6D3"/>
+</svg>

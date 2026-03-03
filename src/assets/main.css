@@ -1,0 +1,277 @@
+/* ============================================
+   RACTIME — Design System & Raccoon Theme
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
+
+/* ---------- Design Tokens ---------- */
+:root {
+  /* Raccoon palette */
+  --clr-charcoal:       #1E1E2E;
+  --clr-surface:        #2A2A3C;
+  --clr-surface-hover:  #33334A;
+  --clr-brown:          #8B5E3C;
+  --clr-brown-light:    #B07D5A;
+  --clr-cream:          #F5E6D3;
+  --clr-cream-dim:      #D9C9B5;
+  --clr-accent:         #4CAF50;
+  --clr-accent-hover:   #66BB6A;
+  --clr-mask-grey:      #5C5C78;
+  --clr-danger:         #EF5350;
+  --clr-danger-hover:   #E53935;
+  --clr-text:           #F5E6D3;
+  --clr-text-muted:     #9E9EB8;
+  --clr-border:         rgba(245, 230, 211, 0.08);
+
+  /* Spacing */
+  --sp-xs:  0.25rem;
+  --sp-sm:  0.5rem;
+  --sp-md:  1rem;
+  --sp-lg:  1.5rem;
+  --sp-xl:  2rem;
+  --sp-2xl: 3rem;
+
+  /* Radii */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 20px rgba(76, 175, 80, 0.15);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Typography */
+  --font-heading: 'Outfit', sans-serif;
+  --font-body:    'Inter', sans-serif;
+}
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--clr-charcoal);
+  color: var(--clr-text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+a {
+  color: var(--clr-accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover { color: var(--clr-accent-hover); }
+
+/* ---------- Utility Classes ---------- */
+.glass-card {
+  background: rgba(42, 42, 60, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--sp-lg);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  padding: var(--sp-sm) var(--sp-lg);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--clr-accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--clr-accent-hover); box-shadow: var(--shadow-glow); }
+
+.btn-secondary {
+  background: var(--clr-surface-hover);
+  color: var(--clr-cream);
+}
+.btn-secondary:hover { background: var(--clr-mask-grey); }
+
+.btn-danger {
+  background: var(--clr-danger);
+  color: #fff;
+}
+.btn-danger:hover { background: var(--clr-danger-hover); }
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
+}
+
+/* ---------- Inputs ---------- */
+.input,
+.select {
+  background: var(--clr-charcoal);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  color: var(--clr-text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: var(--sp-sm) var(--sp-md);
+  transition: border-color var(--transition-fast);
+  width: 100%;
+}
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--clr-accent);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+}
+.input::placeholder { color: var(--clr-text-muted); }
+
+/* ---------- Color Swatch Input ---------- */
+.color-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: none;
+  padding: 2px;
+}
+.color-input::-webkit-color-swatch-wrapper { padding: 0; }
+.color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+.color-input::-moz-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--clr-charcoal); }
+::-webkit-scrollbar-thumb {
+  background: var(--clr-mask-grey);
+  border-radius: var(--radius-full);
+}
+
+/* ---------- Micro Animations ---------- */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slideUp var(--transition-slow) both;
+}
+.animate-fade-in {
+  animation: fadeIn var(--transition-base) both;
+}
+
+/* ---------- Vue Transitions ---------- */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity var(--transition-base);
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all var(--transition-base);
+}
+.slide-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.slide-leave-to {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+/* List transitions */
+.list-enter-active,
+.list-leave-active {
+  transition: all var(--transition-base);
+}
+.list-enter-from {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.list-move {
+  transition: transform var(--transition-base);
+}
+
+/* ---------- Layout Helpers ---------- */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--sp-lg) var(--sp-md);
+}
+
+.page-title {
+  font-size: 1.75rem;
+  margin-bottom: var(--sp-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  .container { padding: var(--sp-md) var(--sp-sm); }
+  .page-title { font-size: 1.35rem; }
+}
